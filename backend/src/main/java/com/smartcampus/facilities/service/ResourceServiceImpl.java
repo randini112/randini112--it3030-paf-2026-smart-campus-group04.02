@@ -1,5 +1,6 @@
 package com.smartcampus.facilities.service;
 
+import com.smartcampus.facilities.dto.ResourceFilterDTO;
 import com.smartcampus.facilities.dto.ResourceRequestDTO;
 import com.smartcampus.facilities.dto.ResourceResponseDTO;
 import com.smartcampus.facilities.exception.ResourceNotFoundException;
@@ -61,8 +62,17 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public Page<ResourceResponseDTO> getAllResources(Pageable pageable) {
-        Page<Resource> resources = resourceRepository.findAll(pageable);
+    public Page<ResourceResponseDTO> getAllResources(ResourceFilterDTO filterDTO, Pageable pageable) {
+        Page<Resource> resources = resourceRepository.findFilteredResources(
+                filterDTO.getSearch(),
+                filterDTO.getType(),
+                filterDTO.getMinCapacity(),
+                filterDTO.getMaxCapacity(),
+                filterDTO.getLocation(),
+                filterDTO.getBuilding(),
+                filterDTO.getStatus(),
+                pageable
+        );
         return resources.map(resourceMapper::toDto);
     }
 }

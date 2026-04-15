@@ -29,6 +29,7 @@ public class ResourceController {
 
     @GetMapping
     public ResponseEntity<Page<ResourceResponseDTO>> getAllResources(
+            @ModelAttribute com.smartcampus.facilities.dto.ResourceFilterDTO filterDTO,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id,desc") String[] sort) {
@@ -37,7 +38,7 @@ public class ResourceController {
                 new Sort.Order(Sort.Direction.fromString(sort[1]), sort[0])
         ));
 
-        Page<ResourceResponseDTO> resources = resourceService.getAllResources(pageable);
+        Page<ResourceResponseDTO> resources = resourceService.getAllResources(filterDTO, pageable);
         return ResponseEntity.ok(resources);
     }
 
