@@ -4,6 +4,7 @@ import ResourceCard from '../../components/user/ResourceCard';
 import SearchBar from '../../components/user/SearchBar';
 import FilterSidebar from '../../components/user/FilterSidebar';
 import ViewToggle from '../../components/user/ViewToggle';
+import ResourceDetailModal from '../../components/user/ResourceDetailModal';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -25,6 +26,8 @@ const ResourceCataloguePage = () => {
   const { resources, loading, error, pageInfo, fetchFilteredResources } = useUserResources();
   const [view, setView] = useState('grid');
   const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [selectedResource, setSelectedResource] = useState(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [filters, setFilters] = useState({
     search: '',
     type: '',
@@ -53,8 +56,8 @@ const ResourceCataloguePage = () => {
   };
 
   const handleCardClick = (resource) => {
-    // Will open detail modal in Phase 11
-    console.log('Resource clicked:', resource);
+    setSelectedResource(resource);
+    setIsDetailOpen(true);
   };
 
   // Skeleton loading card
@@ -292,6 +295,13 @@ const ResourceCataloguePage = () => {
           </div>
         </div>
       </div>
+
+      {/* Resource Detail Modal */}
+      <ResourceDetailModal
+        isOpen={isDetailOpen}
+        onClose={() => setIsDetailOpen(false)}
+        resource={selectedResource}
+      />
     </div>
   );
 };
