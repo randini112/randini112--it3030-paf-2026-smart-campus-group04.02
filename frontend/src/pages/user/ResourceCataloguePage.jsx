@@ -202,8 +202,8 @@ const ResourceCataloguePage = () => {
               <>
                 {view === 'grid' ? (
                   <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
-                    {resources.map((resource) => (
-                      <ResourceCard key={resource.id} resource={resource} onClick={handleCardClick} />
+                    {resources.map((resource, index) => (
+                      <ResourceCard key={resource.id} resource={resource} onClick={handleCardClick} index={index} />
                     ))}
                   </div>
                 ) : (

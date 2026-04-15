@@ -1,7 +1,8 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { MapPin, Users, DoorOpen, Activity, Package, ExternalLink, Clock } from 'lucide-react';
 
-const ResourceCard = ({ resource, onClick }) => {
+const ResourceCard = ({ resource, onClick, index = 0 }) => {
   const { name, description, type, capacity, location, status, availStart, availEnd } = resource;
 
   const isActive = status === 'ACTIVE';
@@ -38,7 +39,10 @@ const ResourceCard = ({ resource, onClick }) => {
   }
 
   return (
-    <div 
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: index * 0.05, ease: 'easeOut' }}
       onClick={() => onClick && onClick(resource)}
       className="group relative flex flex-col h-full bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 overflow-hidden rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer"
     >
@@ -116,7 +120,7 @@ const ResourceCard = ({ resource, onClick }) => {
           <ExternalLink size={16} />
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
