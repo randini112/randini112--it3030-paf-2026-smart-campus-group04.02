@@ -5,6 +5,7 @@ import SearchBar from '../../components/user/SearchBar';
 import FilterSidebar from '../../components/user/FilterSidebar';
 import ViewToggle from '../../components/user/ViewToggle';
 import ResourceDetailModal from '../../components/user/ResourceDetailModal';
+import CatalogueStats from '../../components/user/CatalogueStats';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -131,8 +132,9 @@ const ResourceCataloguePage = () => {
         <div className="flex gap-8">
           
           {/* Filter Sidebar - Desktop */}
-          <div className="hidden lg:block w-72 shrink-0">
+          <div className="hidden lg:block w-72 shrink-0 space-y-6">
             <FilterSidebar filters={filters} onFilterChange={handleFilterChange} />
+            {!loading && resources.length > 0 && <CatalogueStats resources={resources} />}
           </div>
 
           {/* Resource Grid */}

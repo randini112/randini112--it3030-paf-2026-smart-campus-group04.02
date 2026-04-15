@@ -9,8 +9,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
   MapPin, Users, Clock, Building2, DoorOpen, Activity, Package, 
-  CalendarPlus, AlertTriangle, Layers, ArrowUpRight
+  CalendarPlus, AlertTriangle, Layers, ArrowUpRight, QrCode
 } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
 
 const ResourceDetailModal = ({ isOpen, onClose, resource }) => {
   if (!resource) return null;
@@ -87,6 +88,26 @@ const ResourceDetailModal = ({ isOpen, onClose, resource }) => {
               label="Available Until" 
               value={availEnd ? availEnd.substring(0,5) : '18:00'} 
             />
+          </div>
+
+          {/* QR Code — Innovation Feature */}
+          <div className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 rounded-xl">
+            <div className="bg-white p-2 rounded-lg shadow-sm border">
+              <QRCodeSVG 
+                value={`${window.location.origin}/catalogue?resource=${resource.id}`}
+                size={80}
+                level="M"
+              />
+            </div>
+            <div>
+              <div className="flex items-center gap-1.5 mb-1">
+                <QrCode size={14} className="text-blue-600" />
+                <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200">Quick Access QR</h4>
+              </div>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Scan this code to quickly access or share this facility's detail page on any device.
+              </p>
+            </div>
           </div>
 
           {/* Action Buttons */}
