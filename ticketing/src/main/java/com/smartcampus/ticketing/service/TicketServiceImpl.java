@@ -56,4 +56,9 @@ public class TicketServiceImpl implements TicketService {
     public List<Ticket> getTicketsByStatus(String status) {
         return ticketRepository.findByStatus(status);
     }
+
+    @Override
+public List<Ticket> searchTickets(String keyword) {
+    return ticketRepository.findByTitleContainingIgnoreCase(keyword);
+}
 }

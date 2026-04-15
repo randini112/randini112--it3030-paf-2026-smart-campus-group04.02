@@ -22,4 +22,6 @@ public interface TicketRepository extends MongoRepository<Ticket, String> {
     
     // Find tickets by created by
     List<Ticket> findByCreatedBy(String createdBy);
+
+    List<Ticket> findByTitleContainingIgnoreCase(String title);
 }
