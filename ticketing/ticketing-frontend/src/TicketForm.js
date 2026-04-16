@@ -8,6 +8,7 @@ function TicketForm() {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
+    email: '',  // ✅ Added email field
     category: 'IT Support',
     priority: 'Medium',
     createdBy: 'student123'
@@ -23,8 +24,25 @@ function TicketForm() {
     setFiles(e.target.files);
   };
 
+  // ✅ Email validation function
+  const validateEmail = (email) => {
+    if (!email) return "Email is required";
+    if (!email.includes('@')) return "Email must contain @";
+    if (!email.endsWith('.com')) return "Email must end with .com";
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!regex.test(email)) return "Invalid email format";
+    return null;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // ✅ Validate email first
+    const emailError = validateEmail(formData.email);
+    if (emailError) {
+      setMessage('❌ ' + emailError);
+      return;
+    }
     
     try {
         let response;
@@ -55,7 +73,7 @@ function TicketForm() {
         }
         
         setMessage(t('ticketCreated'));
-        setFormData({ title: '', description: '', category: 'IT Support', priority: 'Medium', createdBy: 'student123' });
+        setFormData({ title: '', description: '', email: '', category: 'IT Support', priority: 'Medium', createdBy: 'student123' });
         setFiles([]);
     } catch (error) {
         setMessage(t('error') + ' ' + error.message);
@@ -84,6 +102,33 @@ function TicketForm() {
       </h2>
       
       <form onSubmit={handleSubmit}>
+        {/* ✅ Email Field (Added at top) */}
+        <div style={{ marginBottom: '18px' }}>
+          <label style={{ fontWeight: '600', color: '#4a5568', marginBottom: '6px', display: 'block' }}>
+            Student Email *:
+          </label>
+          <input 
+            type="email" 
+            name="email" 
+            value={formData.email} 
+            onChange={handleChange} 
+            required 
+            placeholder="name@student.slit.lk"
+            pattern="^[^\s@]+@[^\s@]+\.[^\s@]+\.com$"
+            title="Email must contain @ and end with .com"
+            style={{ 
+              width: '100%', 
+              padding: '10px 12px', 
+              border: '1px solid #e2e8f0',
+              borderRadius: '6px',
+              fontSize: '14px'
+            }}
+          />
+          <small style={{ color: '#718096', fontSize: '11px', marginTop: '4px', display: 'block' }}>
+            Must include @ and end with .com (e.g., student@slit.lk.com)
+          </small>
+        </div>
+
         <div style={{ marginBottom: '18px' }}>
           <label style={{ fontWeight: '600', color: '#4a5568', marginBottom: '6px', display: 'block' }}>
             {t('title')}:

@@ -113,6 +113,17 @@ function TicketList() {
     }
   };
 
+  // 🗑️ DELETE Function (CRUD)
+  const handleDelete = async (ticketId) => {
+    if (!window.confirm("Are you sure you want to delete this ticket?")) return;
+    try {
+      await axios.delete(`http://localhost:8080/api/v1/tickets/${ticketId}`);
+      fetchTickets(); // Refresh list
+    } catch (error) {
+      alert("Failed to delete: " + error.message);
+    }
+  };
+
   const clearFilters = () => {
     setSearchTerm('');
     setStatusFilter('');
@@ -192,7 +203,7 @@ function TicketList() {
       borderRadius: '8px',
       overflow: 'hidden',
       boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-      minWidth: '700px' // Forces horizontal scroll on mobile
+      minWidth: '700px'
     },
     th: {
       padding: '14px',
@@ -252,6 +263,17 @@ function TicketList() {
         cursor: 'pointer',
         fontSize: '12px',
         fontWeight: '600'
+      },
+      danger: {
+        padding: '6px 14px',
+        background: '#e53e3e',
+        color: 'white',
+        border: 'none',
+        borderRadius: '5px',
+        cursor: 'pointer',
+        fontSize: '12px',
+        fontWeight: '600',
+        marginLeft: '8px'
       },
       export: {
         background: '#38a169',
@@ -456,22 +478,33 @@ function TicketList() {
                     </span>
                   </td>
                   <td style={styles.td}>
-                    {ticket.status === 'Open' && (
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      {ticket.status === 'Open' && (
+                        <button 
+                          onClick={() => handleStatusUpdate(ticket.id, 'IN_PROGRESS')}
+                          style={styles.button.primary}
+                        >
+                          ▶ {t('start')}
+                        </button>
+                      )}
+                      {ticket.status === 'IN_PROGRESS' && (
+                        <button 
+                          onClick={() => handleStatusUpdate(ticket.id, 'RESOLVED')}
+                          style={styles.button.secondary}
+                        >
+                          ✓ {t('resolve')}
+                        </button>
+                      )}
+                      
+                      {/* 🗑️ DELETE Button (CRUD) */}
                       <button 
-                        onClick={() => handleStatusUpdate(ticket.id, 'IN_PROGRESS')}
-                        style={styles.button.primary}
+                        onClick={() => handleDelete(ticket.id)}
+                        style={styles.button.danger}
+                        title="Delete ticket"
                       >
-                        ▶ {t('start')}
+                        🗑️
                       </button>
-                    )}
-                    {ticket.status === 'IN_PROGRESS' && (
-                      <button 
-                        onClick={() => handleStatusUpdate(ticket.id, 'RESOLVED')}
-                        style={styles.button.secondary}
-                      >
-                        ✓ {t('resolve')}
-                      </button>
-                    )}
+                    </div>
                   </td>
                 </tr>
               ))}

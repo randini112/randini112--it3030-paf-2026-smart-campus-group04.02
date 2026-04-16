@@ -45,6 +45,13 @@ public class Ticket {
     
     @Field(name = "comments")
     private List<Comment> comments = new ArrayList<>();  // ✅ Added this
+
+    @Field(name = "email")
+    private String email;
+
+    // Getter & Setter
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
     
     // Constructor
     public Ticket() {
