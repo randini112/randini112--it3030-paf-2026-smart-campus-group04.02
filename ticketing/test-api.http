@@ -1,0 +1,14 @@
+### Test: Create a new ticket
+POST http://localhost:8080/api/tickets
+Content-Type: application/json
+
+{
+  "title": "WiFi not working in Library",
+  "description": "Cannot connect to campus WiFi from 2nd floor",
+  "category": "IT Support",
+  "priority": "High",
+  "createdBy": "student123"
+}
+
+### Test: Get all tickets
+GET http://localhost:8080/api/tickets
