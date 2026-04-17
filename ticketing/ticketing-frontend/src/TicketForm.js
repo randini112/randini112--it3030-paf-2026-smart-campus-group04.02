@@ -8,7 +8,7 @@ function TicketForm() {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    email: '',  // ✅ Added email field
+    email: '',
     category: 'IT Support',
     priority: 'Medium',
     createdBy: 'student123'
@@ -24,14 +24,20 @@ function TicketForm() {
     setFiles(e.target.files);
   };
 
-  // ✅ Email validation function
+  // ✅ SLIIT Email Validation: IT23730038@my.sliit.lk
   const validateEmail = (email) => {
-    if (!email) return "Email is required";
-    if (!email.includes('@')) return "Email must contain @";
-    if (!email.endsWith('.com')) return "Email must end with .com";
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!regex.test(email)) return "Invalid email format";
-    return null;
+    const cleanEmail = email.trim();
+    
+    if (!cleanEmail) return "Email is required";
+    
+    // Pattern: IT + numbers + @my.sliit.lk (case-insensitive)
+    const sliitEmailRegex = /^IT\d+@my\.sliit\.lk$/i;
+    
+    if (!sliitEmailRegex.test(cleanEmail)) {
+      return "Invalid SLIIT email. Use format: IT23730038@my.sliit.lk";
+    }
+    
+    return null; // ✅ Valid
   };
 
   const handleSubmit = async (e) => {
@@ -102,30 +108,29 @@ function TicketForm() {
       </h2>
       
       <form onSubmit={handleSubmit}>
-        {/* ✅ Email Field (Added at top) */}
+        {/* ✅ SLIIT Email Field */}
         <div style={{ marginBottom: '18px' }}>
           <label style={{ fontWeight: '600', color: '#4a5568', marginBottom: '6px', display: 'block' }}>
             Student Email *:
           </label>
           <input 
-            type="email" 
+            type="text" 
             name="email" 
             value={formData.email} 
             onChange={handleChange} 
             required 
-            placeholder="name@student.slit.lk"
-            pattern="^[^\s@]+@[^\s@]+\.[^\s@]+\.com$"
-            title="Email must contain @ and end with .com"
+            placeholder="IT23730038@my.sliit.lk"
             style={{ 
               width: '100%', 
               padding: '10px 12px', 
               border: '1px solid #e2e8f0',
               borderRadius: '6px',
-              fontSize: '14px'
+              fontSize: '14px',
+              fontFamily: 'monospace'
             }}
           />
           <small style={{ color: '#718096', fontSize: '11px', marginTop: '4px', display: 'block' }}>
-            Must include @ and end with .com (e.g., student@slit.lk.com)
+            Format: IT + StudentID + @my.sliit.lk (e.g., IT23730038@my.sliit.lk)
           </small>
         </div>
 

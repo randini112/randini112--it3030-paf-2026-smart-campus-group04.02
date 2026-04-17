@@ -15,7 +15,7 @@ const TableSkeleton = ({ rows = 5 }) => (
         gap: '15px',
         alignItems: 'center'
       }}>
-        {[...Array(5)].map((_, j) => (
+        {[...Array(6)].map((_, j) => (
           <div key={j} style={{
             height: '16px',
             background: 'linear-gradient(90deg, #edf2f7 25%, #e2e8f0 50%, #edf2f7 75%)',
@@ -74,7 +74,8 @@ function TicketList() {
       const term = searchTerm.toLowerCase();
       result = result.filter(ticket => 
         ticket.title.toLowerCase().includes(term) ||
-        ticket.description.toLowerCase().includes(term)
+        ticket.description.toLowerCase().includes(term) ||
+        (ticket.email && ticket.email.toLowerCase().includes(term))
       );
     }
     
@@ -133,9 +134,10 @@ function TicketList() {
 
   // 📄 Export to CSV Function
   const exportToCSV = () => {
-    const headers = ['ID', 'Title', 'Category', 'Priority', 'Status', 'Created By', 'Created At'];
+    const headers = ['ID', 'Email', 'Title', 'Category', 'Priority', 'Status', 'Created By', 'Created At'];
     const rows = filteredTickets.map(t => [
       t.id,
+      t.email || '',
       `"${t.title.replace(/"/g, '""')}"`,
       t.category,
       t.priority,
@@ -157,7 +159,7 @@ function TicketList() {
   // 🔹 Dynamic Styles based on Dark Mode
   const styles = {
     container: {
-      maxWidth: '1100px',
+      maxWidth: '1200px',
       margin: '30px auto',
       padding: '30px',
       color: darkMode ? '#e2e8f0' : '#4a5568'
@@ -203,7 +205,7 @@ function TicketList() {
       borderRadius: '8px',
       overflow: 'hidden',
       boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-      minWidth: '700px'
+      minWidth: '800px' // Increased for email column
     },
     th: {
       padding: '14px',
@@ -215,7 +217,8 @@ function TicketList() {
     td: {
       padding: '12px',
       borderBottom: `1px solid ${darkMode ? '#4a5568' : '#e2e8f0'}`,
-      color: darkMode ? '#e2e8f0' : '#4a5568'
+      color: darkMode ? '#e2e8f0' : '#4a5568',
+      fontSize: '13px'
     },
     badge: (type, value) => {
       const colors = {
@@ -306,6 +309,11 @@ function TicketList() {
       border: `1px dashed ${darkMode ? '#4a5568' : '#e2e8f0'}`,
       borderRadius: '10px',
       color: darkMode ? '#a0aec0' : '#718096'
+    },
+    email: {
+      fontFamily: 'monospace',
+      fontSize: '12px',
+      color: darkMode ? '#90cdf4' : '#2b6cb0'
     }
   };
 
@@ -439,6 +447,7 @@ function TicketList() {
           <table style={styles.table}>
             <thead>
               <tr>
+                <th style={styles.th}>{t('email')}</th>
                 <th style={styles.th}>{t('title')}</th>
                 <th style={styles.th}>{t('category')}</th>
                 <th style={styles.th}>{t('priority')}</th>
@@ -453,6 +462,11 @@ function TicketList() {
                     ? (darkMode ? '#2d3748' : '#ffffff') 
                     : (darkMode ? '#1a202c' : '#f7fafc')
                 }}>
+                  <td style={styles.td}>
+                    <span style={styles.email}>
+                      {ticket.email || 'N/A'}
+                    </span>
+                  </td>
                   <td style={styles.td}>
                     <Link 
                       to={`/tickets/${ticket.id}`} 
