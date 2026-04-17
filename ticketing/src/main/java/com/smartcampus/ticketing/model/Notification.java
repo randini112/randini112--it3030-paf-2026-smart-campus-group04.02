@@ -15,7 +15,7 @@ public class Notification {
     private String userId;
     
     @Field(name = "type")
-    private String type; // e.g., "TICKET_CREATED", "STATUS_UPDATED"
+    private String type;
     
     @Field(name = "message")
     private String message;
@@ -27,8 +27,8 @@ public class Notification {
     private LocalDateTime createdAt;
     
     public Notification() {
-        this.createdAt = LocalDateTime.now();
         this.read = false;
+        this.createdAt = LocalDateTime.now();
     }
     
     // Getters and Setters

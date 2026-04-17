@@ -205,7 +205,7 @@ function TicketList() {
       borderRadius: '8px',
       overflow: 'hidden',
       boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-      minWidth: '800px' // Increased for email column
+      minWidth: '800px'
     },
     th: {
       padding: '14px',
