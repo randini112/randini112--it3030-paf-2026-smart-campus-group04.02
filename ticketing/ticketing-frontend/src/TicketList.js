@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from './api';
 import { useTheme } from './ThemeContext';
 import { useLanguage } from './LanguageContext';
 
@@ -57,7 +57,7 @@ function TicketList() {
 
   const fetchTickets = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/v1/tickets');
+      const response = await api.get('/api/v1/tickets');
       setTickets(response.data);
       setLoading(false);
     } catch (error) {
@@ -104,7 +104,7 @@ function TicketList() {
 
   const handleStatusUpdate = async (ticketId, newStatus) => {
     try {
-      await axios.put(`http://localhost:8080/api/v1/tickets/${ticketId}/status`, {
+      await api.put(`/api/v1/tickets/${ticketId}/status`, {
         status: newStatus,
         note: `Status updated via UI`
       });
@@ -118,7 +118,7 @@ function TicketList() {
   const handleDelete = async (ticketId) => {
     if (!window.confirm("Are you sure you want to delete this ticket?")) return;
     try {
-      await axios.delete(`http://localhost:8080/api/v1/tickets/${ticketId}`);
+      await api.delete(`/api/v1/tickets/${ticketId}`);
       fetchTickets(); // Refresh list
     } catch (error) {
       alert("Failed to delete: " + error.message);
@@ -205,7 +205,7 @@ function TicketList() {
       borderRadius: '8px',
       overflow: 'hidden',
       boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-      minWidth: '800px' // Increased for email column
+      minWidth: '800px'
     },
     th: {
       padding: '14px',

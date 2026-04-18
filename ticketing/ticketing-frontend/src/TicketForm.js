@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from './api';
 import { useLanguage } from './LanguageContext';
 
 function TicketForm() {
@@ -24,17 +24,18 @@ function TicketForm() {
     setFiles(e.target.files);
   };
 
-  // ✅ SLIIT Email Validation: IT23730038@my.sliit.lk
+  // ✅ SLIIT Email Validation: Any 2 letters + 8 numbers + @my.sliit.lk
+  // Examples: IT23730038@my.sliit.lk, BM23730039@my.sliit.lk, EC23730040@my.sliit.lk
   const validateEmail = (email) => {
     const cleanEmail = email.trim();
     
     if (!cleanEmail) return "Email is required";
     
-    // Pattern: IT + numbers + @my.sliit.lk (case-insensitive)
-    const sliitEmailRegex = /^IT\d+@my\.sliit\.lk$/i;
+    // Pattern: 2 letters + 8 numbers + @my.sliit.lk (case-insensitive)
+    const sliitEmailRegex = /^[A-Za-z]{2}\d{8}@my\.sliit\.lk$/i;
     
     if (!sliitEmailRegex.test(cleanEmail)) {
-      return "Invalid SLIIT email. Use format: IT23730038@my.sliit.lk";
+      return "Invalid SLIIT email. Use format: XX12345678@my.sliit.lk (e.g., IT23730038@my.sliit.lk)";
     }
     
     return null; // ✅ Valid
@@ -61,16 +62,16 @@ function TicketForm() {
                 formDataToSend.append("images", files[i]);
             }
             
-            response = await axios.post(
-                'http://localhost:8080/api/v1/tickets', 
+            response = await api.post(
+              '/api/v1/tickets', 
                 formDataToSend,
                 {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 }
             );
         } else {
-            response = await axios.post(
-                'http://localhost:8080/api/v1/tickets', 
+            response = await api.post(
+              '/api/v1/tickets', 
                 formData,
                 {
                     headers: { 'Content-Type': 'application/json' }
@@ -108,7 +109,7 @@ function TicketForm() {
       </h2>
       
       <form onSubmit={handleSubmit}>
-        {/* ✅ SLIIT Email Field */}
+        {/* ✅ SLIIT Email Field - All Faculties */}
         <div style={{ marginBottom: '18px' }}>
           <label style={{ fontWeight: '600', color: '#4a5568', marginBottom: '6px', display: 'block' }}>
             Student Email *:
@@ -130,7 +131,7 @@ function TicketForm() {
             }}
           />
           <small style={{ color: '#718096', fontSize: '11px', marginTop: '4px', display: 'block' }}>
-            Format: IT + StudentID + @my.sliit.lk (e.g., IT23730038@my.sliit.lk)
+            Format: 2 letters + 8 numbers + @my.sliit.lk (e.g., IT23730038, BM23730039, EC23730040)
           </small>
         </div>
 

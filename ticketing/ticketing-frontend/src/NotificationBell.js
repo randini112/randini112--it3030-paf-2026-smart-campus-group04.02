@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from './api';
 
 function NotificationBell({ userId = "student123" }) {
   const [notifications, setNotifications] = useState([]);
@@ -15,8 +15,8 @@ function NotificationBell({ userId = "student123" }) {
   const fetchNotifications = async () => {
     try {
       const [notifsRes, countRes] = await Promise.all([
-        axios.get(`http://localhost:8080/api/v1/notifications/user/${userId}`),
-        axios.get(`http://localhost:8080/api/v1/notifications/user/${userId}/unread-count`)
+        api.get(`/api/v1/notifications/user/${userId}`),
+        api.get(`/api/v1/notifications/user/${userId}/unread-count`)
       ]);
       setNotifications(notifsRes.data);
       setUnreadCount(countRes.data);
@@ -27,7 +27,7 @@ function NotificationBell({ userId = "student123" }) {
 
   const handleMarkAsRead = async (notificationId) => {
     try {
-      await axios.put(`http://localhost:8080/api/v1/notifications/${notificationId}/read`);
+      await api.put(`/api/v1/notifications/${notificationId}/read`);
       fetchNotifications(); // Refresh
     } catch (error) {
       console.error("Error marking as read:", error);
@@ -36,7 +36,7 @@ function NotificationBell({ userId = "student123" }) {
 
   const handleMarkAllAsRead = async () => {
     try {
-      await axios.put(`http://localhost:8080/api/v1/notifications/user/${userId}/read-all`);
+      await api.put(`/api/v1/notifications/user/${userId}/read-all`);
       fetchNotifications();
     } catch (error) {
       console.error("Error marking all as read:", error);
@@ -45,7 +45,7 @@ function NotificationBell({ userId = "student123" }) {
 
   const handleDelete = async (notificationId) => {
     try {
-      await axios.delete(`http://localhost:8080/api/v1/notifications/${notificationId}`);
+      await api.delete(`/api/v1/notifications/${notificationId}`);
       fetchNotifications();
     } catch (error) {
       console.error("Error deleting notification:", error);

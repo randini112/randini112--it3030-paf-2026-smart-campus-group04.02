@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from './api';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   PieChart, Pie, Cell, LineChart, Line
@@ -23,7 +23,7 @@ function DashboardPage() {
 
   const fetchDashboardData = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/v1/tickets');
+      const response = await api.get('/api/v1/tickets');
       const tickets = response.data;
       
       // Calculate stats
