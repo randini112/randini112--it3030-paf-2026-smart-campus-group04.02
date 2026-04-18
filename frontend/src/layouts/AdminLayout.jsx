@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Building2, Settings, LayoutDashboard, Database, UserCircle, Wrench, Bell } from 'lucide-react';
+import { Building2, Settings, LayoutDashboard, Database, UserCircle, Wrench, Bell, Server } from 'lucide-react';
 import { Toaster } from "@/components/ui/sonner"
 
 const AdminLayout = () => {
@@ -9,6 +9,7 @@ const AdminLayout = () => {
   const navItems = [
     { name: 'Dashboard', path: '/admin/dashboard', icon: <LayoutDashboard size={20} />, color: 'text-blue-500' },
     { name: 'Facilities Hub', path: '/admin/facilities', icon: <Building2 size={20} />, color: 'text-indigo-500' },
+    { name: 'Asset Inventory', path: '/admin/equipment', icon: <Server size={20} />, color: 'text-orange-500' },
     { name: 'System Settings', path: '/admin/settings', icon: <Settings size={20} />, color: 'text-slate-400' },
   ];
 

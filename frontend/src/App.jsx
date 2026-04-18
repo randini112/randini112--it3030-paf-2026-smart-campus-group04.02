@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import AdminLayout from './layouts/AdminLayout'
 import UserLayout from './layouts/UserLayout'
 import FacilitiesManagerPage from './pages/admin/FacilitiesManagerPage'
+import EquipmentManagerPage from './pages/admin/EquipmentManagerPage'
 import ResourceCataloguePage from './pages/user/ResourceCataloguePage'
 import ResourceAnalyticsPage from './pages/admin/ResourceAnalyticsPage'
 import ResourceFormPage from './pages/admin/ResourceFormPage'
@@ -33,6 +34,7 @@ function App() {
         
         {/* Facilities CRUD Routes */}
         <Route path="facilities" element={<FacilitiesManagerPage />} />
+        <Route path="equipment" element={<EquipmentManagerPage />} />
         <Route path="facilities/new" element={<ResourceFormPage />} />
         <Route path="facilities/:id/edit" element={<ResourceFormPage />} />
         <Route path="facilities/:id" element={<ResourceDetailPage />} />
