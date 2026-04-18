@@ -9,7 +9,6 @@ const AdminLayout = () => {
   const navItems = [
     { name: 'Dashboard', path: '/admin/dashboard', icon: <LayoutDashboard size={20} />, color: 'text-blue-500' },
     { name: 'Facilities Hub', path: '/admin/facilities', icon: <Building2 size={20} />, color: 'text-indigo-500' },
-    { name: 'Maintenance', path: '/admin/maintenance', icon: <Wrench size={20} />, color: 'text-amber-500', badge: 'NEW' },
     { name: 'System Settings', path: '/admin/settings', icon: <Settings size={20} />, color: 'text-slate-400' },
   ];
 

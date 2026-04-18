@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Users, DoorOpen, Activity, Package, ExternalLink, Clock } from 'lucide-react';
+import { MapPin, Users, DoorOpen, Activity, Package, ExternalLink, Clock, ArrowUpRight } from 'lucide-react';
 
 const ResourceCard = ({ resource, onClick, index = 0 }) => {
   const { name, description, type, capacity, location, status, availStart, availEnd } = resource;

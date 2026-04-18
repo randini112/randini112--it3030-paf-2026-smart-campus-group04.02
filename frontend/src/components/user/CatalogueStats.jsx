@@ -44,8 +44,8 @@ const CatalogueStats = ({ resources }) => {
           <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Live Category Split</p>
         </div>
       </div>
-      <div className="relative z-10 h-[220px]">
-        <ResponsiveContainer width="100%" height="100%">
+      <div className="relative z-10 h-[220px] w-full overflow-hidden">
+        <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
           <BarChart data={chartData} barSize={28}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} opacity={0.2} />
             <XAxis 

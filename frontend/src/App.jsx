@@ -6,9 +6,9 @@ import ResourceCataloguePage from './pages/user/ResourceCataloguePage'
 import ResourceAnalyticsPage from './pages/admin/ResourceAnalyticsPage'
 import ResourceFormPage from './pages/admin/ResourceFormPage'
 import ResourceDetailPage from './pages/admin/ResourceDetailPage'
-import MaintenanceTrackerPage from './pages/admin/MaintenanceTrackerPage'
-import MaintenanceFormPage from './pages/admin/MaintenanceFormPage'
-import MaintenanceDetailPage from './pages/admin/MaintenanceDetailPage'
+// import MaintenanceTrackerPage from './pages/admin/MaintenanceTrackerPage'
+// import MaintenanceFormPage from './pages/admin/MaintenanceFormPage'
+// import MaintenanceDetailPage from './pages/admin/MaintenanceDetailPage'
 
 function App() {
   return (
@@ -40,11 +40,11 @@ function App() {
         {/* Placeholder routes for navigation */}
         <Route path="settings" element={<div className="p-4">Settings Coming Soon</div>} />
 
-        {/* Maintenance Tracker Routes */}
-        <Route path="maintenance" element={<MaintenanceTrackerPage />} />
+        {/* Maintenance Tracker Routes - Hidden for Module A */}
+        {/* <Route path="maintenance" element={<MaintenanceTrackerPage />} />
         <Route path="maintenance/new" element={<MaintenanceFormPage />} />
         <Route path="maintenance/:id/edit" element={<MaintenanceFormPage />} />
-        <Route path="maintenance/:id" element={<MaintenanceDetailPage />} />
+        <Route path="maintenance/:id" element={<MaintenanceDetailPage />} /> */}
       </Route>
 
       {/* Fallback */}

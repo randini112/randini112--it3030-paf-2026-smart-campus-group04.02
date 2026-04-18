@@ -17,7 +17,8 @@ const ResourceFormPage = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isFetching, setIsFetching] = useState(isEditMode);
     const [formData, setFormData] = useState({
-        name: '', type: 'HALL', capacity: '', location: '', status: 'ACTIVE'
+        name: '', type: 'HALL', capacity: '', location: '', building: '', floor: '',
+        imageUrl: '', availStart: '08:00', availEnd: '20:00', description: '', status: 'ACTIVE'
     });
 
     useEffect(() => {
@@ -30,7 +31,13 @@ const ResourceFormPage = () => {
                             name: data.name,
                             type: data.type,
                             capacity: data.capacity || '',
-                            location: data.location,
+                            location: data.location || '',
+                            building: data.building || '',
+                            floor: data.floor || '',
+                            imageUrl: data.imageUrl || '',
+                            availStart: data.availStart || '08:00',
+                            availEnd: data.availEnd || '20:00',
+                            description: data.description || '',
                             status: data.status
                         });
                     }
@@ -123,15 +130,67 @@ const ResourceFormPage = () => {
                                     placeholder="Optional"
                                 />
                             </div>
-                        </div>
-                        <div className="space-y-2">
-                            <label className="text-sm font-semibold text-slate-700">Location</label>
-                            <input 
-                                required type="text"
-                                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                                value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})}
-                                placeholder="e.g., Block A, Level 1"
-                            />
+                            <div className="space-y-2 col-span-2 sm:col-span-1">
+                                <label className="text-sm font-semibold text-slate-700">Location (Detailed)</label>
+                                <input 
+                                    required type="text"
+                                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                    value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})}
+                                    placeholder="e.g., Block A, Level 1"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-semibold text-slate-700">Building</label>
+                                <input 
+                                    type="text"
+                                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                    value={formData.building} onChange={e => setFormData({...formData, building: e.target.value})}
+                                    placeholder="e.g., Block A"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-semibold text-slate-700">Floor</label>
+                                <input 
+                                    type="text"
+                                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                    value={formData.floor} onChange={e => setFormData({...formData, floor: e.target.value})}
+                                    placeholder="e.g., 1"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-semibold text-slate-700">Available From</label>
+                                <input 
+                                    required type="time"
+                                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                    value={formData.availStart} onChange={e => setFormData({...formData, availStart: e.target.value})}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-semibold text-slate-700">Available Until</label>
+                                <input 
+                                    required type="time"
+                                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                    value={formData.availEnd} onChange={e => setFormData({...formData, availEnd: e.target.value})}
+                                />
+                            </div>
+                            <div className="space-y-2 col-span-2">
+                                <label className="text-sm font-semibold text-slate-700">Image URL</label>
+                                <input 
+                                    type="url"
+                                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                    value={formData.imageUrl} onChange={e => setFormData({...formData, imageUrl: e.target.value})}
+                                    placeholder="e.g., https://example.com/image.jpg"
+                                />
+                            </div>
+                            <div className="space-y-2 col-span-2">
+                                <label className="text-sm font-semibold text-slate-700">Description</label>
+                                <textarea 
+                                    rows="3"
+                                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-y"
+                                    value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})}
+                                    placeholder="Provide detailed description of the facility or equipment..."
+                                />
+                            </div>
                         </div>
                         <div className="space-y-2">
                             <label className="text-sm font-semibold text-slate-700">Operational Status</label>

@@ -7,7 +7,8 @@ import { DeleteConfirmModal } from '../../components/admin/DeleteConfirmModal';
 import { motion } from 'framer-motion';
 import { 
   Building2, MapPin, Users, DoorOpen, PlusCircle, Activity, 
-  AlertCircle, Package, Pencil, Trash2, Power, PowerOff, LayoutDashboard, Eye
+  AlertCircle, Package, Pencil, Trash2, Power, PowerOff, LayoutDashboard, Eye, 
+  Download, CheckSquare, Square
 } from 'lucide-react';
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -27,11 +28,74 @@ const FacilitiesManagerPage = () => {
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
     const [resourceToDelete, setResourceToDelete] = useState(null);
     const [isProcessing, setIsProcessing] = useState(false);
+    
+    // Bulk Operations State
+    const [selectedIds, setSelectedIds] = useState(new Set());
 
     useEffect(() => {fetchResources(0, 50, 'id,desc');}, [fetchResources]);
 
     const activeCount = resources.filter(r => r.status === 'ACTIVE').length;
     const maintenanceCount = resources.filter(r => r.status === 'OUT_OF_SERVICE').length;
+
+    // --- Bulk operation handlers ---
+    const toggleSelect = (e, id) => {
+        e.stopPropagation();
+        const newSet = new Set(selectedIds);
+        if (newSet.has(id)) newSet.delete(id);
+        else newSet.add(id);
+        setSelectedIds(newSet);
+    };
+
+    const toggleSelectAll = () => {
+        if (selectedIds.size === resources.length) setSelectedIds(new Set());
+        else setSelectedIds(new Set(resources.map(r => r.id)));
+    };
+
+    const handleBulkDelete = async () => {
+        if (!window.confirm(`Delete ${selectedIds.size} resources?`)) return;
+        setIsProcessing(true);
+        let successCount = 0;
+        for (let id of selectedIds) {
+            const res = await deleteResource(id);
+            if (res.success) successCount++;
+        }
+        setIsProcessing(false);
+        setSelectedIds(new Set());
+        if (successCount > 0) toast.success(`Deleted ${successCount} resources`);
+        addLog(`Bulk deleted ${successCount} items`, 'Multiple', 'delete');
+    };
+
+    const handleBulkToggle = async () => {
+        setIsProcessing(true);
+        let successCount = 0;
+        for (let id of selectedIds) {
+            const resource = resources.find(r => r.id === id);
+            const res = await toggleStatus(id, resource.status);
+            if (res.success) successCount++;
+        }
+        setIsProcessing(false);
+        setSelectedIds(new Set());
+        if (successCount > 0) toast.success(`Updated status for ${successCount} resources`);
+        addLog(`Bulk updated ${successCount} items`, 'Multiple', 'update');
+    };
+
+    const exportToCSV = () => {
+        const headers = ['ID,Name,Type,Capacity,Building,Floor,Location,Status\n'];
+        const dataToExport = selectedIds.size > 0 ? resources.filter(r => selectedIds.has(r.id)) : resources;
+        
+        const rows = dataToExport.map(r => {
+            return `${r.id},"${r.name}",${r.type},${r.capacity || ''},"${r.building || ''}","${r.floor || ''}","${r.location}",${r.status}\n`;
+        });
+        
+        const blob = new Blob([headers, ...rows], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `resources_export_${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        toast.success("CSV Export downloaded");
+    };
 
     const handleDeleteClick = (e, resource) => {
         e.stopPropagation();
@@ -78,6 +142,9 @@ const FacilitiesManagerPage = () => {
                     <p className="text-slate-500 mt-1">Manage and provision campus assets.</p>
                     </div>
                     <div className="flex gap-2">
+                        <Button onClick={exportToCSV} variant="outline" className="border-slate-200">
+                            <Download className="mr-2 h-4 w-4" /> Export CSV
+                        </Button>
                         <Button onClick={() => navigate('/admin/dashboard')} variant="outline" className="border-slate-200">
                             <LayoutDashboard className="mr-2 h-4 w-4" /> Analytics
                         </Button>
@@ -114,14 +181,33 @@ const FacilitiesManagerPage = () => {
 
                 {/* Table */}
                 <Card className="border-slate-200 shadow-sm overflow-hidden">
-                    <div className="p-4 border-b border-slate-200 bg-slate-50/80">
-                        <h3 className="font-semibold text-lg text-slate-800 tracking-tight">Resource Database</h3>
+                    <div className="p-4 border-b border-slate-200 bg-slate-50/80 flex justify-between items-center h-16">
+                        {selectedIds.size > 0 ? (
+                            <div className="flex items-center gap-4 w-full">
+                                <span className="font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full text-sm">
+                                    {selectedIds.size} Selected
+                                </span>
+                                <Button size="sm" variant="outline" onClick={handleBulkToggle} disabled={isProcessing}>
+                                    <Power className="mr-2 h-4 w-4" /> Toggle Status
+                                </Button>
+                                <Button size="sm" variant="outline" className="text-red-600 hover:bg-red-50 border-red-200" onClick={handleBulkDelete} disabled={isProcessing}>
+                                    <Trash2 className="mr-2 h-4 w-4" /> Delete Selection
+                                </Button>
+                            </div>
+                        ) : (
+                            <h3 className="font-semibold text-lg text-slate-800 tracking-tight">Resource Database</h3>
+                        )}
                     </div>
                     {error && <div className="p-4 bg-red-50 text-red-600 font-medium">{error}</div>}
                     <div className="relative w-full overflow-auto">
                         <Table>
                             <TableHeader>
                                 <TableRow className="bg-slate-50/50">
+                                    <TableHead className="w-12 text-center">
+                                        <button onClick={toggleSelectAll} className="text-slate-400 hover:text-blue-600">
+                                            {selectedIds.size === resources.length && resources.length > 0 ? <CheckSquare className="mx-auto" size={18} /> : <Square className="mx-auto" size={18} />}
+                                        </button>
+                                    </TableHead>
                                     <TableHead className="w-[280px]">Resource Details</TableHead>
                                     <TableHead>Category</TableHead>
                                     <TableHead>Capacity</TableHead>
@@ -139,8 +225,14 @@ const FacilitiesManagerPage = () => {
                                         <TableRow 
                                             key={resource.id} 
                                             onClick={() => navigate(`/admin/facilities/${resource.id}`)}
-                                            className="border-slate-200 hover:bg-slate-50/80 cursor-pointer group"
+                                            className={`border-slate-200 cursor-pointer group transition-colors ${selectedIds.has(resource.id) ? 'bg-blue-50/50 hover:bg-blue-50' : 'hover:bg-slate-50/80'}`}
                                         >
+                                            <TableCell className="text-center" onClick={(e) => toggleSelect(e, resource.id)}>
+                                                {selectedIds.has(resource.id) ? 
+                                                    <CheckSquare className="mx-auto text-blue-600" size={18} /> : 
+                                                    <Square className="mx-auto text-slate-300 group-hover:text-slate-400" size={18} />
+                                                }
+                                            </TableCell>
                                             <TableCell>
                                                 <span className="font-semibold text-slate-900 block">{resource.name}</span>
                                                 <span className="text-xs text-slate-500">{resource.location}</span>

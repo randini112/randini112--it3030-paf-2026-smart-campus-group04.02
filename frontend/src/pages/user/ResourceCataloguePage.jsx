@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useUserResources } from '../../hooks/useUserResources';
 import ResourceCard from '../../components/user/ResourceCard';
 import SearchBar from '../../components/user/SearchBar';
@@ -20,7 +21,8 @@ import {
   Clock,
   Activity,
   DoorOpen,
-  Package
+  Package,
+  ArrowUpRight
 } from 'lucide-react';
 
 const ResourceCataloguePage = () => {
