@@ -5,17 +5,7 @@ spring:
   application:
     name: facilities-service
     
-  datasource:
-    url: jdbc:mysql://localhost:3306/smartcampus_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
-    username: root
-    password: 
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.MySQLDialect
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/smartcampus_db
+      # If you are using MongoDB Atlas, replace locally with your cluster URI
