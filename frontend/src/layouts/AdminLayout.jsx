@@ -1,15 +1,16 @@
 import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Building2, PlusCircle, Settings, LayoutDashboard, Database, UserCircle } from 'lucide-react';
+import { Building2, Settings, LayoutDashboard, Database, UserCircle, Wrench, Bell } from 'lucide-react';
 import { Toaster } from "@/components/ui/sonner"
 
 const AdminLayout = () => {
   const location = useLocation();
 
   const navItems = [
-    { name: 'Dashboard', path: '/admin/dashboard', icon: <LayoutDashboard size={20} /> },
-    { name: 'Facilities Hub', path: '/admin/facilities', icon: <Building2 size={20} /> },
-    { name: 'System Settings', path: '/admin/settings', icon: <Settings size={20} /> },
+    { name: 'Dashboard', path: '/admin/dashboard', icon: <LayoutDashboard size={20} />, color: 'text-blue-500' },
+    { name: 'Facilities Hub', path: '/admin/facilities', icon: <Building2 size={20} />, color: 'text-indigo-500' },
+    { name: 'Maintenance', path: '/admin/maintenance', icon: <Wrench size={20} />, color: 'text-amber-500', badge: 'NEW' },
+    { name: 'System Settings', path: '/admin/settings', icon: <Settings size={20} />, color: 'text-slate-400' },
   ];
 
   return (
@@ -21,24 +22,34 @@ const AdminLayout = () => {
           <span className="text-lg font-bold text-white tracking-tight">Campus Ops<span className="text-blue-500">Hub</span></span>
         </div>
         
-        <div className="flex-1 px-4 py-6 space-y-2">
-          <p className="px-2 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Module A Core</p>
+        <div className="flex-1 px-4 py-6 space-y-1">
+          <p className="px-3 text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] mb-4">Module A Core</p>
           {navItems.map((item) => {
-            const isActive = location.pathname.includes(item.path);
+            const isActive = location.pathname.startsWith(item.path);
             return (
               <Link
                 key={item.name}
                 to={item.path}
-                className={`flex items-center space-x-3 px-3 py-2.5 rounded-md transition-colors ${
-                  isActive 
-                    ? 'bg-blue-600/10 text-blue-500 font-medium' 
-                    : 'hover:bg-slate-800 hover:text-white'
+                className={`flex items-center gap-3 px-4 py-3 rounded-2xl transition-all group relative ${
+                  isActive
+                    ? 'bg-white/10 text-white font-black shadow-inner'
+                    : 'text-slate-400 hover:bg-white/5 hover:text-white'
                 }`}
               >
-                <span className={isActive ? 'text-blue-500' : 'text-slate-400'}>{item.icon}</span>
-                <span>{item.name}</span>
+                {isActive && (
+                  <div className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 ${item.color || 'bg-blue-500'} bg-current rounded-r-full`} />
+                )}
+                <span className={isActive ? (item.color || 'text-blue-500') : 'text-slate-500 group-hover:text-slate-300 transition-colors'}>
+                  {item.icon}
+                </span>
+                <span className="text-sm flex-1">{item.name}</span>
+                {item.badge && !isActive && (
+                  <span className="text-[9px] font-black uppercase tracking-widest bg-amber-500 text-white px-1.5 py-0.5 rounded-full">
+                    {item.badge}
+                  </span>
+                )}
               </Link>
-            )
+            );
           })}
         </div>
         
