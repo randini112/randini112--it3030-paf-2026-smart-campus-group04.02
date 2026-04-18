@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import resourceService from '../services/resourceService';
-import { motion } from 'framer-motion';
-import { Users, AlertTriangle, CheckCircle, Database, Edit, Trash2, Plus } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Users, AlertTriangle, CheckCircle, Database, Edit, Trash2, Plus, X } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell
 } from 'recharts';
@@ -9,6 +9,17 @@ import {
 const AdminResourceManager = () => {
     const [resources, setResources] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+
+    // Modal State
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingId, setEditingId] = useState(null);
+    const [formData, setFormData] = useState({
+        name: '',
+        type: 'HALL',
+        capacity: '',
+        location: '',
+        status: 'ACTIVE'
+    });
 
     useEffect(() => {
         loadData();
@@ -32,6 +43,44 @@ const AdminResourceManager = () => {
         }
     };
 
+    const openModal = (resource = null) => {
+        if (resource) {
+            setEditingId(resource.id);
+            setFormData({
+                name: resource.name,
+                type: resource.type,
+                capacity: resource.capacity || '',
+                location: resource.location,
+                status: resource.status
+            });
+        } else {
+            setEditingId(null);
+            setFormData({ name: '', type: 'HALL', capacity: '', location: '', status: 'ACTIVE' });
+        }
+        setIsModalOpen(true);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const payload = {
+                ...formData,
+                capacity: formData.capacity ? parseInt(formData.capacity) : null
+            };
+
+            if (editingId) {
+                await resourceService.updateResource(editingId, payload);
+            } else {
+                await resourceService.createResource(payload);
+            }
+            setIsModalOpen(false);
+            loadData();
+        } catch (error) {
+            alert('Operation failed. Check console.');
+            console.error(error);
+        }
+    };
+
     // Calculate Dashboard Stats
     const stats = useMemo(() => {
         const total = resources.length;
@@ -46,7 +95,7 @@ const AdminResourceManager = () => {
         return resources
             .filter(r => r.capacity)
             .sort((a,b) => b.capacity - a.capacity)
-            .slice(0, 7); // Top 7 largest facilities
+            .slice(0, 7);
     }, [resources]);
 
     const StatCard = ({ title, value, icon: Icon, colorClass, delay }) => (
@@ -67,7 +116,7 @@ const AdminResourceManager = () => {
     );
 
     return (
-        <div className="min-h-screen bg-slate-50/50 p-6 md:p-8 font-sans">
+        <div className="min-h-screen bg-slate-50/50 p-6 md:p-8 font-sans relative">
             <div className="max-w-7xl mx-auto space-y-8">
                 
                 {/* Header */}
@@ -76,7 +125,10 @@ const AdminResourceManager = () => {
                         <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Admin Management Panel</h1>
                         <p className="text-slate-500 mt-1">Monitor, configure, and provision campus assets</p>
                     </div>
-                    <button className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-medium transition-colors shadow-lg shadow-indigo-600/20">
+                    <button 
+                        onClick={() => openModal()}
+                        className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-medium transition-colors shadow-lg shadow-indigo-600/20"
+                    >
                         <Plus className="w-5 h-5" />
                         Add New Resource
                     </button>
@@ -116,7 +168,7 @@ const AdminResourceManager = () => {
                 {/* Data Table */}
                 <motion.div 
                     initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
-                    className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden"
+                    className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden relative z-10"
                 >
                     <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                         <h3 className="text-lg font-bold text-slate-800">Resource Database</h3>
@@ -168,7 +220,7 @@ const AdminResourceManager = () => {
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 flex justify-center gap-2">
-                                                <button className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-xl transition-colors" title="Edit">
+                                                <button onClick={() => openModal(resource)} className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-xl transition-colors" title="Edit">
                                                     <Edit className="w-4 h-4" />
                                                 </button>
                                                 <button onClick={() => handleDelete(resource.id)} className="p-2 text-rose-600 hover:bg-rose-50 rounded-xl transition-colors" title="Delete">
@@ -180,12 +232,107 @@ const AdminResourceManager = () => {
                                 )}
                             </tbody>
                         </table>
-                        {(!resources || resources.length === 0) && !isLoading && (
-                            <div className="text-center py-10 text-slate-400">No resources found in the database.</div>
-                        )}
                     </div>
                 </motion.div>
             </div>
+
+            {/* Glassmorphism Modal Overlay */}
+            <AnimatePresence>
+                {isModalOpen && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+                        <motion.div 
+                            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+                            onClick={() => setIsModalOpen(false)}
+                        ></motion.div>
+
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }} 
+                            animate={{ opacity: 1, scale: 1, y: 0 }} 
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="bg-white p-6 rounded-3xl shadow-2xl relative z-10 w-full max-w-lg border border-white/20"
+                        >
+                            <button 
+                                onClick={() => setIsModalOpen(false)} 
+                                className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+
+                            <h2 className="text-2xl font-bold text-slate-800 mb-6">
+                                {editingId ? 'Edit Resource' : 'Add New Resource'}
+                            </h2>
+
+                            <form onSubmit={handleSubmit} className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">Resource Name</label>
+                                    <input 
+                                        type="text" required
+                                        className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                                        value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})}
+                                    />
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 mb-1">Type</label>
+                                        <select 
+                                            className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                                            value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})}
+                                        >
+                                            <option value="HALL">Hall</option>
+                                            <option value="LAB">Lab</option>
+                                            <option value="ROOM">Room</option>
+                                            <option value="EQUIPMENT">Equipment</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 mb-1">Capacity (Optional)</label>
+                                        <input 
+                                            type="number"
+                                            className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                                            value={formData.capacity} onChange={e => setFormData({...formData, capacity: e.target.value})}
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">Location</label>
+                                    <input 
+                                        type="text" required
+                                        className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                                        value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">Status</label>
+                                    <select 
+                                        className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                                        value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})}
+                                    >
+                                        <option value="ACTIVE">ACTIVE - Available for use</option>
+                                        <option value="OUT_OF_SERVICE">OUT OF SERVICE - Needs Maintenance</option>
+                                    </select>
+                                </div>
+
+                                <div className="pt-4 flex gap-3">
+                                    <button 
+                                        type="button" onClick={() => setIsModalOpen(false)}
+                                        className="flex-1 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl transition-colors"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button 
+                                        type="submit"
+                                        className="flex-1 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-indigo-600/20"
+                                    >
+                                        {editingId ? 'Save Changes' : 'Create Resource'}
+                                    </button>
+                                </div>
+                            </form>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+
         </div>
     );
 };
