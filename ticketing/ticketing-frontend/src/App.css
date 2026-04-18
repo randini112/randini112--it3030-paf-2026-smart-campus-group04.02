@@ -1,0 +1,234 @@
+/* Reset & Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f7fafc;
+  color: #4a5568;
+  line-height: 1.6;
+}
+
+/* App Container */
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Links */
+a {
+  color: #1e3a5f;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #2c5282;
+  text-decoration: none;
+}
+
+/* Buttons */
+button {
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  opacity: 0.95;
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* Forms */
+input, textarea, select {
+  font-family: inherit;
+  font-size: 14px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: #1e3a5f;
+  box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.1);
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background-color: #1e3a5f;
+  color: white;
+  font-weight: 600;
+  text-align: left;
+}
+
+td {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+tr:hover {
+  background-color: #edf2f7;
+}
+
+/* Cards / Containers */
+.card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+}
+
+/* Status Badges */
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-open {
+  background: #ebf8ff;
+  color: #2b6cb0;
+}
+
+.badge-in-progress {
+  background: #fffaf0;
+  color: #c05621;
+}
+
+.badge-resolved {
+  background: #f0fff4;
+  color: #276749;
+}
+
+.badge-closed {
+  background: #f7fafc;
+  color: #4a5568;
+}
+
+/* Priority Badges */
+.priority-low {
+  background: #38a169;
+  color: white;
+}
+
+.priority-medium {
+  background: #dd6b20;
+  color: white;
+}
+
+.priority-high {
+  background: #e53e3e;
+  color: white;
+}
+
+.priority-critical {
+  background: #9b2c2c;
+  color: white;
+}
+
+/* Messages */
+.success-message {
+  background: #f0fff4;
+  color: #276749;
+  border: 1px solid #9ae6b4;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.error-message {
+  background: #fff5f5;
+  color: #c53030;
+  border: 1px solid #feb2b2;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+/* Loading State */
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #718096;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: #f7fafc;
+  border: 1px dashed #e2e8f0;
+  border-radius: 10px;
+  color: #718096;
+}
+
+.empty-state a {
+  color: #1e3a5f;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .App {
+    padding: 10px;
+  }
+  
+  table {
+    font-size: 14px;
+  }
+  
+  th, td {
+    padding: 10px 8px !important;
+  }
+}
+
+/* Dark Mode Overrides */
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Cards in dark mode */
+body[style*="#1a202c"] .card,
+body[style*="#1a202c"] table,
+body[style*="#1a202c"] form > div {
+  background: #2d3748 !important;
+  border-color: #4a5568 !important;
+}
+
+body[style*="#1a202c"] input,
+body[style*="#1a202c"] textarea,
+body[style*="#1a202c"] select {
+  background: #4a5568 !important;
+  color: #e2e8f0 !important;
+  border-color: #718096 !important;
+}
+
+body[style*="#1a202c"] tr:nth-child(even) {
+  background: #2d3748 !important;
+}
+
+body[style*="#1a202c"] tr:hover {
+  background: #4a5568 !important;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
