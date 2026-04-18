@@ -17,17 +17,22 @@ export const useUserResources = () => {
         setError(null);
         try {
             const data = await resourceService.getAllResources(page, size, sort, filters);
-            setResources(data.content);
-            setPageInfo({
-                page: data.pageable?.pageNumber || 0,
-                size: data.pageable?.pageSize || 12,
-                totalPages: data.totalPages,
-                totalElements: data.totalElements
-            });
+            // Handle both Spring Boot paginated format and plain array (mock fallback)
+            if (Array.isArray(data)) {
+                setResources(data);
+                setPageInfo({ page: 0, size: data.length, totalPages: 1, totalElements: data.length });
+            } else {
+                setResources(data.content || []);
+                setPageInfo({
+                    page: data.pageable?.pageNumber ?? 0,
+                    size: data.pageable?.pageSize ?? size,
+                    totalPages: data.totalPages ?? 1,
+                    totalElements: data.totalElements ?? 0
+                });
+            }
         } catch (err) {
             setError(err.message || 'Failed to connect to the server');
             console.error("Error fetching user resources:", err);
-            // setResources([]);
         } finally {
             setLoading(false);
         }
