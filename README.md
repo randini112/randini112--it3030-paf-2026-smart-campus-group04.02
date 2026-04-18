@@ -1,29 +1,29 @@
+HEAD
 # Smart Campus Operations Hub
 
 A full-stack web application for university campus management with modern UI and robust backend.
 
-## 🏗️ Project Structure
-
-```
 IT3030-PAF_Assignment/
-├── frontend/                 # React + Vite + Tailwind CSS
-│   ├── src/
-│   │   ├── components/      # Reusable UI components
-│   │   ├── pages/          # Page components
-│   │   ├── layouts/        # Layout components
-│   │   └── services/       # API services
-│   ├── package.json
-│   └── vite.config.js
-└── backend/                 # Spring Boot + MongoDB
-    ├── src/main/java/com/smartcampus/
-    │   ├── controller/     # REST API controllers
-    │   ├── model/         # MongoDB document models
-    │   ├── repository/    # Spring Data repositories
-    │   ├── service/       # Business logic
-    │   └── config/        # Configuration classes
-    ├── pom.xml
-    └── application.yml
-```
+├── ticketing-frontend/ # React + Vite + Tailwind CSS (Ticketing Module)
+│ ├── src/
+│ │ ├── components/ # Reusable UI components
+│ │ ├── pages/ # Page components
+│ │ ├── layouts/ # Layout components
+│ │ └── services/ # API services
+│ ├── package.json
+│ └── vite.config.js
+├── ticketing/ # Spring Boot + MongoDB (Ticketing Backend)
+│ ├── src/main/java/com/smartcampus/
+│ │ ├── controller/ # REST API controllers
+│ │ ├── model/ # MongoDB document models
+│ │ ├── repository/ # Spring Data repositories
+│ │ ├── service/ # Business logic
+│ │ └── config/ # Configuration classes
+│ ├── pom.xml
+│ └── application.properties
+├── frontend/ # React + Vite + Tailwind CSS (Booking Module)
+├── backend/ # Spring Boot + MongoDB (Booking Backend)
+└── README.md
 
 ## 🚀 Tech Stack
 
@@ -120,7 +120,7 @@ IT3030-PAF_Assignment/
 ### Prerequisites
 - Node.js 16+
 - Java 17+
-- MongoDB
+- MongoDB Atlas Account
 - Maven
 
 ### Frontend Setup
@@ -229,3 +229,5 @@ The `@tailwind` and `@apply` warnings in the IDE are normal and don't affect fun
 ## 📝 License
 
 This project is part of IT3030 PAF Assignment.
+
+
