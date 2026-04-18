@@ -3,6 +3,9 @@ import AdminLayout from './layouts/AdminLayout'
 import UserLayout from './layouts/UserLayout'
 import FacilitiesManagerPage from './pages/admin/FacilitiesManagerPage'
 import ResourceCataloguePage from './pages/user/ResourceCataloguePage'
+import ResourceAnalyticsPage from './pages/admin/ResourceAnalyticsPage'
+import ResourceFormPage from './pages/admin/ResourceFormPage'
+import ResourceDetailPage from './pages/admin/ResourceDetailPage'
 
 function App() {
   return (
@@ -20,10 +23,18 @@ function App() {
 
       {/* Admin Routes */}
       <Route path="/admin" element={<AdminLayout />}>
-        <Route index element={<Navigate to="/admin/facilities" replace />} />
+        <Route index element={<Navigate to="/admin/dashboard" replace />} />
+        
+        {/* Dashboard Analytics */}
+        <Route path="dashboard" element={<ResourceAnalyticsPage />} />
+        
+        {/* Facilities CRUD Routes */}
         <Route path="facilities" element={<FacilitiesManagerPage />} />
+        <Route path="facilities/new" element={<ResourceFormPage />} />
+        <Route path="facilities/:id/edit" element={<ResourceFormPage />} />
+        <Route path="facilities/:id" element={<ResourceDetailPage />} />
+        
         {/* Placeholder routes for navigation */}
-        <Route path="dashboard" element={<div className="p-4">Dashboard Coming Soon</div>} />
         <Route path="settings" element={<div className="p-4">Settings Coming Soon</div>} />
       </Route>
 
