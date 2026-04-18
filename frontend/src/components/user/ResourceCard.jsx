@@ -40,85 +40,98 @@ const ResourceCard = ({ resource, onClick, index = 0 }) => {
 
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.05, ease: 'easeOut' }}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      whileHover={{ 
+        y: -10, 
+        scale: 1.02,
+        boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)" 
+      }}
+      transition={{ 
+        type: "spring", 
+        stiffness: 300, 
+        damping: 15,
+        duration: 0.4, 
+        delay: index * 0.05 
+      }}
       onClick={() => onClick && onClick(resource)}
-      className="group relative flex flex-col h-full bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 overflow-hidden rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+      className="group relative flex flex-col h-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-white/20 dark:border-slate-800/50 overflow-hidden rounded-3xl shadow-sm cursor-pointer"
     >
       {/* Top Image / Gradient Area */}
-      <div className={`h-32 w-full bg-gradient-to-br ${typeConfig.color} relative overflow-hidden`}>
-        {/* Abstract pattern inside gradient */}
-        <div className="absolute inset-0 opacity-20 mix-blend-overlay">
+      <div className={`h-36 w-full bg-gradient-to-br ${typeConfig.color} relative overflow-hidden`}>
+        {/* Animated Background Pattern */}
+        <motion.div 
+          animate={{ 
+            backgroundPosition: ["0% 0%", "100% 100%"],
+            opacity: [0.1, 0.2, 0.1]
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+          className="absolute inset-0 opacity-20 mix-blend-overlay"
+        >
           <svg className="h-full w-full" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <pattern id="pattern" width="20" height="20" patternUnits="userSpaceOnUse">
-                 <circle cx="2" cy="2" r="1.5" fill="currentColor"></circle>
+              <pattern id={`pattern-${resource.id}`} width="30" height="30" patternUnits="userSpaceOnUse">
+                 <path d="M0 30L30 0" stroke="white" strokeWidth="0.5" fill="none" />
               </pattern>
             </defs>
-            <rect width="100%" height="100%" fill="url(#pattern)"></rect>
+            <rect width="100%" height="100%" fill="url(#pattern-resource.id)"></rect>
           </svg>
-        </div>
+        </motion.div>
+
+        {/* Shine Effect on Hover */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/30 to-white/0 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
 
         {/* Status Indicator (Pulse) */}
-        <div className="absolute top-3 right-3 flex items-center space-x-1.5 bg-white/20 dark:bg-black/20 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-semibold text-white shadow-sm border border-white/20">
+        <div className="absolute top-4 right-4 flex items-center space-x-1.5 bg-black/20 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-bold text-white shadow-sm border border-white/20">
           <span className="relative flex h-2 w-2">
             {isActive && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>}
-            <span className={`relative inline-flex rounded-full h-2 w-2 ${isActive ? 'bg-green-500' : 'bg-red-500'}`}></span>
+            <span className={`relative inline-flex rounded-full h-2 w-2 ${isActive ? 'bg-green-400' : 'bg-rose-500'}`}></span>
           </span>
-          <span className="tracking-wide shadow-sm">{isActive ? 'AVAILABLE' : 'MAINTENANCE'}</span>
+          <span className="tracking-wide">{isActive ? 'LIVE' : 'DOWN'}</span>
         </div>
 
         {/* Type Badge */}
-        <div className="absolute bottom-3 left-3 bg-white/90 dark:bg-slate-950/90 backdrop-blur-md px-3 py-1.5 rounded-lg flex items-center space-x-1.5 shadow-sm border border-white/20 dark:border-slate-800/50">
+        <div className="absolute bottom-4 left-4 bg-white/90 dark:bg-slate-950/90 backdrop-blur-md px-3.5 py-2 rounded-xl flex items-center space-x-2 shadow-lg border border-white/20 dark:border-slate-800/50">
            {typeConfig.icon}
-           <span className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">{typeConfig.label}</span>
+           <span className="text-[10px] font-black text-slate-900 dark:text-white uppercase tracking-[0.1em]">{typeConfig.label}</span>
         </div>
       </div>
 
       {/* Content Area */}
-      <div className="flex flex-col flex-1 p-5">
-        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-1">
+      <div className="flex flex-col flex-1 p-6">
+        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-1">
           {name}
         </h3>
         
-        <p className="text-sm text-slate-500 dark:text-slate-400 mb-4 line-clamp-2 min-h-[40px]">
-          {description || "No description provided for this campus facility."}
+        <p className="text-sm text-slate-500 dark:text-slate-400 mb-6 line-clamp-2 min-h-[40px] leading-relaxed">
+          {description || "Explore this state-of-the-art facility equipped for student success and research excellence."}
         </p>
 
         {/* Info Grid */}
-        <div className="grid grid-cols-2 gap-3 mt-auto pt-4 border-t border-slate-100 dark:border-slate-800">
-          <div className="flex items-center text-sm text-slate-600 dark:text-slate-300">
-            <div className="bg-slate-100 dark:bg-slate-800 p-1.5 rounded-md mr-2">
-              <Users size={14} className="text-slate-500 dark:text-slate-400" />
+        <div className="space-y-3 mt-auto pt-6 border-t border-slate-100 dark:border-slate-800">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center text-sm text-slate-600 dark:text-slate-300">
+              <Users size={16} className="text-slate-400 mr-2" />
+              <span className="font-semibold">{capacity ? `${capacity} Pax` : 'N/A'}</span>
             </div>
-            <span className="font-medium">{capacity ? `${capacity} Pax` : 'N/A'}</span>
-          </div>
-
-          <div className="flex items-center text-sm text-slate-600 dark:text-slate-300">
-            <div className="bg-slate-100 dark:bg-slate-800 p-1.5 rounded-md mr-2">
-              <MapPin size={14} className="text-slate-500 dark:text-slate-400" />
+            <div className="flex items-center text-sm text-slate-600 dark:text-slate-300">
+              <MapPin size={16} className="text-slate-400 mr-2" />
+              <span className="font-semibold truncate max-w-[100px]">{location}</span>
             </div>
-            <span className="font-medium truncate" title={location}>{location}</span>
           </div>
           
-          <div className="flex items-center text-sm text-slate-600 dark:text-slate-300 col-span-2">
-            <div className="bg-slate-100 dark:bg-slate-800 p-1.5 rounded-md mr-2">
-              <Clock size={14} className="text-slate-500 dark:text-slate-400" />
-            </div>
-            <span className="font-medium text-xs tracking-wide">
-              {availStart ? availStart.substring(0,5) : '08:00'} — {availEnd ? availEnd.substring(0,5) : '18:00'}
-            </span>
+          <div className="flex items-center text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest bg-slate-50 dark:bg-slate-800/50 px-3 py-2 rounded-lg justify-start">
+            <Clock size={14} className="mr-2" />
+            {availStart ? availStart.substring(0,5) : '08:00'} — {availEnd ? availEnd.substring(0,5) : '18:00'}
           </div>
         </div>
       </div>
 
-      {/* Hover Action Overlay Overlay on desktop */}
-      <div className="absolute inset-0 bg-blue-600/0 group-hover:bg-blue-600/5 transition-colors duration-300 pointer-events-none rounded-2xl"></div>
-      <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300 pointer-events-none">
-        <div className="bg-blue-600 text-white p-2 rounded-full shadow-lg">
-          <ExternalLink size={16} />
-        </div>
+      {/* Action Indicator */}
+      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+         <div className="bg-white/90 backdrop-blur p-2 rounded-full shadow-lg">
+            <ArrowUpRight size={16} className="text-blue-600" />
+         </div>
       </div>
     </motion.div>
   );
