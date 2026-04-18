@@ -21,7 +21,7 @@ public class Resource {
     private String status; // ACTIVE, OUT_OF_SERVICE
 
     // Default constructor
-    public CampusResource() {
+    public Resource() {
     }
 
     // Getters and Setters
