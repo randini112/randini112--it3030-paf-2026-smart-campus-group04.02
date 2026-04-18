@@ -7,5 +7,4 @@ spring:
     
   data:
     mongodb:
-      uri: mongodb://localhost:27017/smartcampus_db
-      # If you are using MongoDB Atlas, replace locally with your cluster URI
+      uri: mongodb+srv://randinimethma_db_user:pmPP69PscVCzT5zh@cluster0.bg8oqs0.mongodb.net/smartcampus_db?retryWrites=true&w=majority&appName=Cluster0

@@ -49,8 +49,13 @@ const toPaginatedResponse = (data, page, size) => {
 
 const resourceService = {
   getAllResources: async (page = 0, size = 10, sort = 'id,desc', filters = {}) => {
+    let dbData = [];
+    let isBackendOnline = false;
+
+    // 1. Try to fetch from Backend (MongoDB)
     try {
-      let url = `${API_BASE_URL}?page=${page}&size=${size}&sort=${sort}`;
+      // We fetch a large chunk from DB to combine and paginate locally for the demo
+      let url = `${API_BASE_URL}?page=0&size=1000&sort=${sort}`;
       if (filters.search) url += `&search=${filters.search}`;
       if (filters.type) url += `&type=${filters.type}`;
       if (filters.minCapacity) url += `&minCapacity=${filters.minCapacity}`;
@@ -59,20 +64,29 @@ const resourceService = {
       if (filters.status) url += `&status=${filters.status}`;
 
       const response = await axios.get(url);
-      return response.data;
+      if (response.data && response.data.content) {
+        dbData = response.data.content;
+      }
+      isBackendOnline = true;
     } catch (error) {
-      console.warn("Backend offline! Switching to ADVANCED MOCK DATA for demo.");
-      // Apply client-side filters on mock data
-      let filtered = [...advancedMockData];
-      if (filters.search) filtered = filtered.filter(r => r.name.toLowerCase().includes(filters.search.toLowerCase()));
-      if (filters.type) filtered = filtered.filter(r => r.type === filters.type);
-      if (filters.status) filtered = filtered.filter(r => r.status === filters.status);
-      if (filters.location) filtered = filtered.filter(r => r.location?.toLowerCase().includes(filters.location.toLowerCase()));
-      if (filters.minCapacity) filtered = filtered.filter(r => r.capacity >= parseInt(filters.minCapacity));
-      return new Promise((resolve) => {
-        setTimeout(() => resolve(toPaginatedResponse(filtered, page, size)), 300);
-      });
+      console.warn("Backend offline! Using only local mock data.");
     }
+
+    // 2. Filter local Mock Data
+    let filteredMock = [...advancedMockData];
+    if (filters.search) filteredMock = filteredMock.filter(r => r.name.toLowerCase().includes(filters.search.toLowerCase()));
+    if (filters.type) filteredMock = filteredMock.filter(r => r.type === filters.type);
+    if (filters.status) filteredMock = filteredMock.filter(r => r.status === filters.status);
+    if (filters.location) filteredMock = filteredMock.filter(r => r.location?.toLowerCase().includes(filters.location.toLowerCase()));
+    if (filters.minCapacity) filteredMock = filteredMock.filter(r => r.capacity >= parseInt(filters.minCapacity));
+
+    // 3. Combine both MongoDB data and Mock Data
+    const combinedData = [...dbData, ...filteredMock];
+
+    // 4. Return combined data paginated
+    return new Promise((resolve) => {
+      setTimeout(() => resolve(toPaginatedResponse(combinedData, page, size)), isBackendOnline ? 0 : 300);
+    });
   },
 
   getResourceById: async (id) => {
